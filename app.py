@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, make_response
 import pickle
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
@@ -534,6 +534,18 @@ def index():
 @app.route('/game')
 def game():
     return render_template('game.html')
+
+@app.route('/404.html')
+def not_found_page():
+    response = make_response(render_template('404.html'), 404)
+    response.headers['Cache-Control'] = 'public, max-age=300'  # Cache for 5 minutes
+    return response
+
+@app.errorhandler(404)
+def page_not_found(e):
+    response = make_response(render_template('404.html'), 404)
+    response.headers['Cache-Control'] = 'public, max-age=300'  # Cache for 5 minutes
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True)
