@@ -6,7 +6,11 @@ import numpy as np
 app = Flask(__name__)
 
 # Load model
-model = pickle.load(open('best_model_XGBoost.pkl', 'rb'))
+try:
+    model = pickle.load(open('best_model_XGBoost.pkl', 'rb'))
+except Exception as e:
+    print(f"Error loading model: {e}")
+    model = None
 
 # Define CATEGORIES
 CATEGORIES = {
@@ -508,6 +512,8 @@ le_pnk10 = LabelEncoder().fit(CATEGORIES['PNK10'])
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    if model is None:
+        return "Model not loaded", 500
     if request.method == 'POST':
         pnk16 = request.form['PNK16']
         pnk11 = request.form['PNK11']
