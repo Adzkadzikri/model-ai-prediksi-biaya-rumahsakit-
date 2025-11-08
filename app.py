@@ -509,6 +509,7 @@ le_pnk10 = LabelEncoder().fit(CATEGORIES['PNK10'])
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    prediction = None
     if request.method == 'POST':
         pnk16 = request.form['PNK16']
         pnk11 = request.form['PNK11']
@@ -525,11 +526,9 @@ def index():
             le_pnk10.transform([pnk10])[0]
         ]
 
-        prediction = model.predict(np.array([encoded]))[0]
+        prediction = round(model.predict(np.array([encoded]))[0])
 
-        return f'<h1>Prediction: {prediction}</h1><br><a href="/">Back</a>'
-
-    return render_template('index.html', categories=CATEGORIES)
+    return render_template('index.html', categories=CATEGORIES, prediction=prediction)
 
 @app.route('/game')
 def game():
